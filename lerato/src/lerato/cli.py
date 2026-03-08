@@ -5,6 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 import argparse
 
+from lerato.errors import LeratoRuntimeError, LeratoSyntaxError
+from lerato.runtime import execute_file
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -41,5 +44,10 @@ def main(argv: list[str] | None = None) -> int:
     if not source_path.exists():
         parser.error(f"source file not found: {source_path}")
 
-    print(f"Lerato CLI bootstrap: ready to run {source_path}")
+    try:
+        execute_file(source_path)
+    except (LeratoSyntaxError, LeratoRuntimeError) as exc:
+        print(f"Error: {exc}")
+        return 1
+
     return 0
