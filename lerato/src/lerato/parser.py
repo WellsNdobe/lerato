@@ -3,12 +3,20 @@
 from __future__ import annotations
 
 from lerato.ast_nodes import (
+    AssignStmt,
     BinaryExpr,
     BooleanLiteral,
     CallExpr,
+    ExprStmt,
     Expression,
+    FunctionDefStmt,
     Identifier,
+    IfStmt,
     NumberLiteral,
+    PrintStmt,
+    Program,
+    ReturnStmt,
+    Statement,
     StringLiteral,
     UnaryExpr,
 )
@@ -21,6 +29,16 @@ class Parser:
         self.tokens = tokens
         self.current = 0
 
+    def parse_program(self) -> Program:
+        statements: list[Statement] = []
+        self._skip_newlines()
+
+        while not self._is_at_end():
+            statements.append(self._statement())
+            self._skip_newlines()
+
+        return Program(statements)
+
     def parse_expression(self) -> Expression:
         expression = self._equality()
         self._consume_trailing_newlines()
@@ -32,6 +50,80 @@ class Parser:
                 column=token.column,
             )
         return expression
+
+    def _statement(self) -> Statement:
+        if self._match(TokenType.BONTSHA):
+            return self._print_statement()
+        if self._match(TokenType.GE):
+            return self._if_statement()
+        if self._match(TokenType.TIRO):
+            return self._function_statement()
+        if self._match(TokenType.BUSA):
+            return self._return_statement()
+        if self._check(TokenType.IDENTIFIER) and self._check_next(TokenType.EQUAL):
+            return self._assignment_statement()
+        return self._expression_statement()
+
+    def _print_statement(self) -> PrintStmt:
+        self._consume(TokenType.LEFT_PAREN, "expected '(' after 'bontsha'")
+        expression = self._equality()
+        self._consume(TokenType.RIGHT_PAREN, "expected ')' after print expression")
+        self._consume_statement_terminator("expected newline after print statement")
+        return PrintStmt(expression)
+
+    def _assignment_statement(self) -> AssignStmt:
+        name = self._consume(TokenType.IDENTIFIER, "expected variable name")
+        self._consume(TokenType.EQUAL, "expected '=' in assignment")
+        expression = self._equality()
+        self._consume_statement_terminator("expected newline after assignment")
+        return AssignStmt(name.lexeme, expression)
+
+    def _if_statement(self) -> IfStmt:
+        condition = self._equality()
+        self._consume(TokenType.GONA, "expected 'gona' after if condition")
+        self._require_block_start("expected newline after 'gona'")
+        body = self._block()
+        return IfStmt(condition, body)
+
+    def _function_statement(self) -> FunctionDefStmt:
+        name = self._consume(TokenType.IDENTIFIER, "expected function name")
+        self._consume(TokenType.LEFT_PAREN, "expected '(' after function name")
+
+        params: list[str] = []
+        if not self._check(TokenType.RIGHT_PAREN):
+            while True:
+                param = self._consume(TokenType.IDENTIFIER, "expected parameter name")
+                params.append(param.lexeme)
+                if not self._match(TokenType.COMMA):
+                    break
+
+        self._consume(TokenType.RIGHT_PAREN, "expected ')' after parameter list")
+        self._consume(TokenType.GONA, "expected 'gona' after function header")
+        self._require_block_start("expected newline after 'gona'")
+        body = self._block()
+        return FunctionDefStmt(name.lexeme, params, body)
+
+    def _return_statement(self) -> ReturnStmt:
+        expression = self._equality()
+        self._consume_statement_terminator("expected newline after return statement")
+        return ReturnStmt(expression)
+
+    def _expression_statement(self) -> ExprStmt:
+        expression = self._equality()
+        self._consume_statement_terminator("expected newline after expression")
+        return ExprStmt(expression)
+
+    def _block(self) -> list[Statement]:
+        statements: list[Statement] = []
+        self._skip_newlines()
+
+        while not self._check(TokenType.FELELETSA) and not self._is_at_end():
+            statements.append(self._statement())
+            self._skip_newlines()
+
+        self._consume(TokenType.FELELETSA, "expected 'feleletsa' to end block")
+        self._consume_trailing_newlines()
+        return statements
 
     def _equality(self) -> Expression:
         expression = self._comparison()
@@ -141,10 +233,33 @@ class Parser:
         while self._match(TokenType.NEWLINE):
             pass
 
+    def _consume_statement_terminator(self, message: str) -> None:
+        if self._match(TokenType.NEWLINE) or self._check(TokenType.EOF):
+            return
+
+        token = self._peek()
+        raise LeratoSyntaxError(message, line=token.line, column=token.column)
+
+    def _require_block_start(self, message: str) -> None:
+        if self._match(TokenType.NEWLINE):
+            return
+
+        token = self._peek()
+        raise LeratoSyntaxError(message, line=token.line, column=token.column)
+
+    def _skip_newlines(self) -> None:
+        while self._match(TokenType.NEWLINE):
+            pass
+
     def _check(self, token_type: TokenType) -> bool:
         if self._is_at_end():
             return token_type == TokenType.EOF
         return self._peek().token_type == token_type
+
+    def _check_next(self, token_type: TokenType) -> bool:
+        if self.current + 1 >= len(self.tokens):
+            return False
+        return self.tokens[self.current + 1].token_type == token_type
 
     def _advance(self) -> Token:
         if not self._is_at_end():
@@ -164,3 +279,8 @@ class Parser:
 def parse_expression(source: str) -> Expression:
     parser = Parser(tokenize(source))
     return parser.parse_expression()
+
+
+def parse_program(source: str) -> Program:
+    parser = Parser(tokenize(source))
+    return parser.parse_program()

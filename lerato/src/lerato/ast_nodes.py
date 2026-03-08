@@ -1,3 +1,4 @@
+
 """AST nodes for the Lerato version 0 prototype."""
 
 from __future__ import annotations
