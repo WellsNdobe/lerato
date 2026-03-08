@@ -1,0 +1,17 @@
+README.md
+pyproject.toml
+src/lerato/__init__.py
+src/lerato/ast_nodes.py
+src/lerato/cli.py
+src/lerato/errors.py
+src/lerato/lexer.py
+src/lerato/parser.py
+src/lerato/runtime.py
+src/lerato/transpiler.py
+src/lerato.egg-info/PKG-INFO
+src/lerato.egg-info/SOURCES.txt
+src/lerato.egg-info/dependency_links.txt
+src/lerato.egg-info/entry_points.txt
+src/lerato.egg-info/requires.txt
+src/lerato.egg-info/top_level.txt
+tests/test_basic.py

@@ -1,0 +1,2 @@
+[console_scripts]
+lerato = lerato.cli:main

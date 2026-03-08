@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: lerato
+Version: 0.1.0
+Summary: A beginner-friendly Sepedi-inspired programming language prototype.
+Author: Lerato Contributors
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
