@@ -217,8 +217,12 @@ class Lexer:
         return char.isalpha() or char == "_"
 
     def _error(self, message: str) -> None:
+        sepedi_message = {
+            "unterminated string": "Mothalo wa sengwalwa ga se wa tswalelwa.",
+        }.get(message, f"Go na le seka seo se sa amogelwego: {message}")
         raise LeratoSyntaxError(
             message,
+            sepedi_message=sepedi_message,
             line=self.start_line,
             column=self.start_column,
         )
