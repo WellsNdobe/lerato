@@ -10,7 +10,7 @@ def test_lexes_keywords_and_eof() -> None:
     tokens = tokenize("bontsha tiro busa ge gona feleletsa nnete maaka")
 
     assert [token.token_type for token in tokens] == [
-        TokenType.BONSHA,
+        TokenType.BONTSHA,
         TokenType.TIRO,
         TokenType.BUSA,
         TokenType.GE,
@@ -43,7 +43,7 @@ def test_lexes_strings_numbers_and_operators() -> None:
         TokenType.PLUS,
         TokenType.NUMBER,
         TokenType.NEWLINE,
-        TokenType.BONSHA,
+        TokenType.BONTSHA,
         TokenType.LEFT_PAREN,
         TokenType.STRING,
         TokenType.RIGHT_PAREN,
@@ -65,7 +65,7 @@ def test_tracks_line_and_column_positions() -> None:
 
     assert tokens[0].line == 1
     assert tokens[0].column == 1
-    assert tokens[4].token_type == TokenType.BONSHA
+    assert tokens[4].token_type == TokenType.BONTSHA
     assert tokens[4].line == 2
     assert tokens[4].column == 1
 

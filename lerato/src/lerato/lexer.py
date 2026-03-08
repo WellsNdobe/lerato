@@ -30,7 +30,7 @@ class TokenType(Enum):
     STRING = auto()
     NUMBER = auto()
 
-    BONSHA = auto()
+    BONTSHA = auto()
     TIRO = auto()
     BUSA = auto()
     GE = auto()
@@ -43,7 +43,7 @@ class TokenType(Enum):
 
 
 KEYWORDS = {
-    "bontsha": TokenType.BONSHA,
+    "bontsha": TokenType.BONTSHA,
     "tiro": TokenType.TIRO,
     "busa": TokenType.BUSA,
     "ge": TokenType.GE,

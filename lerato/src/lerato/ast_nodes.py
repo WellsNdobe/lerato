@@ -67,6 +67,12 @@ class BinaryExpr(Expression):
 
 
 @dataclass(slots=True)
+class UnaryExpr(Expression):
+    operator: str
+    operand: Expression
+
+
+@dataclass(slots=True)
 class CallExpr(Expression):
     callee: str
     args: list[Expression] = field(default_factory=list)
