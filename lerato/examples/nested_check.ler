@@ -1,0 +1,11 @@
+bontsha("Nested block demo")
+
+tiro lekola(palo) gona
+    ge palo >= 10 gona
+        busa nnete
+    feleletsa
+    busa maaka
+feleletsa
+
+bontsha(lekola(12))
+bontsha(lekola(3))

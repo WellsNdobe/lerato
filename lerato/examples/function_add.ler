@@ -1,0 +1,9 @@
+bontsha("Function demo")
+
+tiro kopanya(a, b) gona
+    busa a + b
+feleletsa
+
+karabo = kopanya(2, 3)
+
+bontsha(karabo)

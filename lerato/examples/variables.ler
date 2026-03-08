@@ -1,0 +1,7 @@
+bontsha("Variables demo")
+
+leina = "Lerato"
+mongwaga = 2026
+
+bontsha(leina)
+bontsha(mongwaga)

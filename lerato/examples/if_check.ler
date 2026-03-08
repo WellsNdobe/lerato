@@ -1,0 +1,15 @@
+bontsha("If demo")
+
+palo = 7
+
+ge palo > 5 gona
+    bontsha("Palo e feta 5")
+feleletsa
+
+ge nnete gona
+    bontsha("Nnete ke nnete")
+feleletsa
+
+ge maaka gona
+    bontsha("Se se ka se bontshwe")
+feleletsa

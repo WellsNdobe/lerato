@@ -1,0 +1,15 @@
+bontsha("Arithmetic demo")
+
+a = 8
+b = 4
+kakaretso = a + b
+phapano = a - b
+kgatiso = a * b
+karolo = a / b
+sephetho = a * b + 2
+
+bontsha(kakaretso)
+bontsha(phapano)
+bontsha(kgatiso)
+bontsha(karolo)
+bontsha(sephetho)

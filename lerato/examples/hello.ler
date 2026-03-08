@@ -1,1 +1,3 @@
-bontsha("Dumela Lefase")
+leina = "Tumelo"
+
+bontsha("Leina la ka ke " + leina)
