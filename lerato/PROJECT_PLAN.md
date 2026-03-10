@@ -2,374 +2,269 @@
 
 ## 1. Project Overview
 
-Lerato is a beginner-friendly programming language inspired by Sepedi and designed to be easy to type on standard keyboards. Version 0 should be a small Python implementation that can run simple `.ler` programs through a handwritten lexer, parser, and transpiler to Python.
+Lerato is a beginner-friendly programming language inspired by Sepedi and designed to be easy to type on standard keyboards. Version 0.1 is now a working prototype with a handwritten lexer, parser, transpiler, runtime, and CLI for single-file `.ler` programs.
 
-The immediate goal is not a full compiler. The immediate goal is a working prototype that supports:
+The next goal is not app building or packaging. The next goal is to make the language itself more usable for real beginner programs.
 
-- `bontsha("Dumela Lefase")`
+## 2. Current Implemented Core
+
+Lerato already supports:
+
+- `bontsha(...)` output
 - variable assignment
-- arithmetic
-- `ge ... gona ... feleletsa`
-- `tiro ... gona ... busa ... feleletsa`
+- numbers, strings, and booleans
+- arithmetic and comparison expressions
+- `ge ... gona ... feleletsa` conditionals
+- `tiro ... gona ... busa ... feleletsa` functions
+- single-file CLI execution
 
-This project exists to make early programming syntax feel more familiar to Sepedi speakers while keeping the implementation practical and teachable.
+## 3. Version 0.2 Language Goals
 
-## 2. Implementation Principles
+Version 0.2 should add the next missing language fundamentals:
 
-- Use Sepedi-inspired ASCII keywords only.
-- Prefer one clear syntax form per feature.
+- `else` support for conditionals
+- comment syntax
+- logical operators
+- loops
+- list literals
+- a small set of built-in functions
+- clearer runtime and syntax errors tied to Lerato source
+
+These features should make Lerato usable for small exercises, branching logic, repetition, and simple data handling.
+
+## 4. Design Principles
+
+- Keep Sepedi-inspired ASCII keywords only.
+- Prefer one obvious syntax form per feature.
 - Keep blocks explicit with `gona` and `feleletsa`.
-- Make version 0 single-file only.
-- Prefer the fastest path to running valid `.ler` files.
-- Reject unsupported syntax instead of guessing.
+- Preserve the current handwritten parser and transpile-to-Python pipeline.
+- Add features in a way that keeps errors predictable and teachable.
+- Do not add classes, modules, static typing, or package management in version 0.2.
 
-## 3. Version 0 Scope
+## 5. Proposed Version 0.2 Scope
 
 ### In Scope
 
-- print/output
-- string, number, and boolean literals
-- variable assignment
-- arithmetic and comparison expressions
-- `if` blocks
-- function definitions
-- return statements
-- command-line execution of a `.ler` file
+- `else` branch support
+- line comments
+- logical operators using `and`, `or`, and `not`
+- `while` loops
+- list literals and indexing
+- built-ins like `tsenya(...)`, `bolelele(...)`, and simple type conversion helpers
+- improved source-mapped errors
 
 ### Out of Scope
 
-- loops
-- imports and modules
-- classes
-- collections beyond what is strictly needed
-- static typing
+- imports and multi-file execution
+- classes and objects
+- dictionaries or advanced collections
+- `for` loops over iterables
 - REPL
-- package management
 - optimization work
 
-## 4. Keyword Mapping Table
+## 6. Keyword Policy For Version 0.2
 
-| Lerato | Meaning | Example | Python Mapping |
-| --- | --- | --- | --- |
-| `bontsha` | print/show | `bontsha("Dumela")` | `print(...)` |
-| `tiro` | function definition | `tiro kopanya(a, b) gona` | `def kopanya(a, b):` |
-| `busa` | return | `busa a + b` | `return a + b` |
-| `ge` | if | `ge x > 0 gona` | `if x > 0:` |
-| `gona` | start block | `ge x > 0 gona` | `:` |
-| `feleletsa` | end block | `feleletsa` | end indentation level |
-| `nnete` | true | `ge nnete gona` | `True` |
-| `maaka` | false | `ge maaka gona` | `False` |
+For version 0.2, keep logical operators as standard language operators:
 
-## 5. Minimal Viable Grammar for Version 0
+- `and`
+- `or`
+- `not`
 
-This grammar is intentionally narrow. It is enough to build the first working prototype.
+Only control-flow keywords that define Lerato syntax should be translated into Sepedi-inspired forms. That keeps expression parsing simpler and avoids keyword ambiguity in the short term.
 
-```ebnf
-program         := statement*
+Version 0.2 keyword decisions:
 
-statement       := print_stmt
-                 | assign_stmt
-                 | if_stmt
-                 | function_stmt
-                 | return_stmt
-                 | expr_stmt
+- `goba` for `else`
+- `gefela` for `while`
 
-print_stmt      := "bontsha" "(" expression ")" newline*
-assign_stmt     := IDENTIFIER "=" expression newline*
-if_stmt         := "ge" expression "gona" newline* statement* "feleletsa" newline*
-function_stmt   := "tiro" IDENTIFIER "(" parameters? ")" "gona" newline* statement* "feleletsa" newline*
-return_stmt     := "busa" expression newline*
-expr_stmt       := expression newline*
+## 7. Grammar Expansion Targets
 
-parameters      := IDENTIFIER ("," IDENTIFIER)*
-arguments       := expression ("," expression)*
+Version 0.2 should expand the grammar in this order:
 
-expression      := equality
-equality        := comparison (("==" | "!=") comparison)*
-comparison      := term ((">" | ">=" | "<" | "<=") term)*
-term            := factor (("+" | "-") factor)*
-factor          := unary (("*" | "/") unary)*
-unary           := ("-" unary) | primary
-primary         := NUMBER
-                 | STRING
-                 | "nnete"
-                 | "maaka"
-                 | IDENTIFIER
-                 | IDENTIFIER "(" arguments? ")"
-                 | "(" expression ")"
-```
+1. `if` with optional `else`
+2. logical expressions with clear precedence for `not`, `and`, and `or`
+3. comment handling in the lexer
+4. `while` statements
+5. list literals: `[1, 2, 3]`
+6. indexing: `maina[0]`
+7. built-in function calls
 
-### Grammar Notes
+Important constraints:
 
-- Newlines should be tokenized because they help separate statements.
-- Indentation in `.ler` source is optional for readability and should not affect parsing.
-- `feleletsa` is the only block terminator in version 0.
-- `else` should not be added yet.
+- Comments should be ignored by the parser.
+- Logical precedence should be stricter than ad hoc parsing.
+- List syntax should follow familiar bracket-based forms.
+- Error messages should still point to Lerato line and column information.
 
-## 6. Technical Architecture
+## 8. Technical Work Areas
 
-### Execution Model
+### Lexer
 
-Use a transpile-and-run pipeline:
+- add tokens for brackets
+- add tokens or keyword handling for new control-flow syntax
+- add logical operator support for `and`, `or`, and `not`
+- support comments
 
-1. read `.ler` source
-2. tokenize it
-3. parse into an AST
-4. transpile AST to Python source
-5. execute the generated Python
+### AST
 
-This is the fastest route to a usable prototype and gives a simple debug path when behavior is wrong.
+- add `WhileStmt`
+- extend `IfStmt` with optional `else_body`
+- add `ListLiteral`
+- add `IndexExpr`
+- add logical expression coverage if separate from binary expressions
 
-### Recommended Modules
+### Parser
 
-| File | Responsibility |
-| --- | --- |
-| `src/lerato/lexer.py` | tokenization and source positions |
-| `src/lerato/parser.py` | AST construction and syntax errors |
-| `src/lerato/transpiler.py` | AST to Python generation |
-| `src/lerato/runtime.py` | execution helpers and safe `exec` context |
-| `src/lerato/cli.py` | file loading and command-line entry point |
-| `src/lerato/ast_nodes.py` | AST dataclasses |
-| `src/lerato/errors.py` | shared error classes |
+- parse optional `else`
+- add logical-expression precedence levels
+- parse `while`
+- parse list literals and indexing
 
-### Parser Recommendation
+### Transpiler
 
-Use a handwritten recursive-descent parser. The grammar is small enough that a parser library would slow down early iteration more than it helps.
+- transpile `else` blocks
+- transpile logical operators safely
+- transpile `while`
+- transpile lists and indexing
+- map new built-ins to Python equivalents carefully
 
-## 7. Recommended Project Tree
+### Runtime
 
-```text
-lerato/
-├── PROJECT_PLAN.md
-├── README.md
-├── pyproject.toml
-├── examples/
-│   ├── hello.ler
-│   ├── variables.ler
-│   ├── arithmetic.ler
-│   ├── if_check.ler
-│   └── function_add.ler
-├── src/
-│   └── lerato/
-│       ├── __init__.py
-│       ├── ast_nodes.py
-│       ├── cli.py
-│       ├── errors.py
-│       ├── lexer.py
-│       ├── parser.py
-│       ├── runtime.py
-│       └── transpiler.py
-└── tests/
-    ├── test_basic.py
-    ├── test_lexer.py
-    ├── test_parser.py
-    ├── test_runtime.py
-    └── test_transpiler.py
-```
+- expose a minimal safe builtin environment
+- improve error wrapping so Lerato source locations remain understandable
 
-### Structure Notes
-
-- Keep all implementation code under `src/lerato`.
-- Put only tiny runnable samples in `examples/`.
-- Keep tests split by stage: lexer, parser, transpiler, runtime.
-- Add no extra folders until the basic pipeline works.
-
-## 8. Example Lerato Programs
-
-### 1. Hello World
-
-```lerato
-bontsha("Dumela Lefase")
-```
-
-### 2. Variables
-
-```lerato
-leina = "Lerato"
-palo = 10
-
-bontsha(leina)
-bontsha(palo)
-```
-
-### 3. Arithmetic
-
-```lerato
-a = 8
-b = 4
-sephetho = a * b + 2
-
-bontsha(sephetho)
-```
-
-### 4. If Block
-
-```lerato
-palo = 7
-
-ge palo > 5 gona
-    bontsha("Palo e feta 5")
-feleletsa
-```
-
-### 5. Function and Return
-
-```lerato
-tiro kopanya(a, b) gona
-    busa a + b
-feleletsa
-
-karabo = kopanya(2, 3)
-bontsha(karabo)
-```
-
-## 9. 2-Week Implementation Sequence
+## 9. Two-Week Version 0.2 Sequence
 
 ### Week 1
 
 #### Day 1
 
-- fill in `pyproject.toml`
-- create CLI entry point
-- add `ast_nodes.py` and `errors.py`
-- set up `pytest`
+- update AST for `else`, loops, and lists
+- decide final keywords for new syntax
+- add failing tests first
 
 #### Day 2
 
-- define token types
-- implement identifier, keyword, number, and string lexing
-- add token position tracking
+- add lexer support for comments and new keywords
+- add bracket tokens for list syntax
+- test tokenization thoroughly
 
 #### Day 3
 
-- finish lexer operators and punctuation
-- add lexer tests for keywords and literals
-- verify tokenization of `examples/hello.ler`
+- implement logical expression parsing with precedence
+- add parser tests for `and` / `or` / `not`
 
 #### Day 4
 
-- implement expression parsing with precedence
-- support literals, identifiers, grouping, and calls
+- implement `if ... else ...`
+- add nested conditional tests
 
 #### Day 5
 
-- implement statement parsing for print and assignment
-- add parser tests for valid basic programs
+- implement `while` parsing
+- add loop parser tests
 
 #### Day 6
 
-- implement `if` block parsing with `ge`, `gona`, `feleletsa`
-- add parser tests for nested statements
+- implement list literals
+- add parser tests for list expressions
 
 #### Day 7
 
-- implement function definitions and `busa`
-- add parser tests for function bodies and parameters
+- implement indexing expressions
+- add parser tests for nested indexing and invalid index syntax
 
 ### Week 2
 
 #### Day 8
 
-- implement Python code generation for literals, expressions, and print
-- add transpiler string-output tests
+- transpile logical expressions and `else`
+- add output-based transpiler tests
 
 #### Day 9
 
-- implement transpilation for assignments and comparisons
-- verify generated Python executes correctly
+- transpile `while`
+- add end-to-end loop execution tests
 
 #### Day 10
 
-- implement transpilation for `if` blocks
-- add end-to-end test for conditional execution
+- transpile lists and indexing
+- add execution tests covering reads and updates if supported
 
 #### Day 11
 
-- implement transpilation for functions and returns
-- add end-to-end function tests
+- add built-ins such as input, length, and conversions
+- test runtime behavior and failure cases
 
 #### Day 12
 
-- implement runtime execution wrapper
-- surface syntax and runtime failures with line information
+- improve runtime and syntax error mapping
+- make common beginner mistakes easier to diagnose
 
 #### Day 13
 
-- wire full CLI path: file -> lexer -> parser -> transpiler -> exec
-- run all example `.ler` files through the CLI
+- add example programs using loops, lists, and `else`
+- run all examples through the CLI
 
 #### Day 14
 
 - tighten tests
-- fix error messages
-- update `README.md` with usage and supported syntax
-- declare version 0 prototype complete if all five example programs run
+- update `README.md` and `DOCUMENTATION.md`
+- declare version 0.2 complete if all new examples run
 
 ## 10. Immediate First Tasks
 
-1. Create `src/lerato/ast_nodes.py` with dataclasses for statements and expressions.
-2. Create `src/lerato/errors.py` with syntax and runtime error classes.
-3. Fill in `pyproject.toml` with package metadata and a CLI entry point.
-4. Implement the token enum and `Token` dataclass in `lexer.py`.
-5. Add lexer support for `bontsha`, `tiro`, `busa`, `ge`, `gona`, `feleletsa`, `nnete`, and `maaka`.
-6. Implement lexer tests before writing the parser.
-7. Implement expression parsing with precedence in `parser.py`.
-8. Implement parsing for assignment, print, `if`, function, and return statements.
-9. Implement the first transpiler pass for hello world and assignments.
-10. Add an end-to-end test that executes `examples/hello.ler`.
+1. Extend the AST for `goba` and `gefela`.
+2. Add failing tests for comments, logical operators, `else`, loops, and lists.
+3. Extend AST nodes before changing the parser.
+4. Implement lexer support for the new syntax.
+5. Add parser support in small steps, starting with `else` and logical precedence.
 
 ## 11. Testing Strategy
 
-### Priority Order
+Priority order:
 
 1. lexer correctness
 2. parser correctness
 3. transpiler output correctness
 4. end-to-end execution
+5. user-facing error quality
 
-### Required Early Tests
+Required new tests:
 
-- keywords are recognized correctly
-- identifiers are not misclassified as keywords
-- numbers and strings tokenize correctly
-- `1 + 2 * 3` parses with correct precedence
-- `ge ... gona ... feleletsa` parses into one block
-- `tiro ... busa ... feleletsa` transpiles to valid Python
-- `nnete` and `maaka` map to `True` and `False`
-- `examples/hello.ler` executes successfully
-
-### Recommendation
-
-Do exact-string assertions for small transpiler outputs. For version 0, this is simpler and more useful than abstract golden-file infrastructure.
+- comments are ignored correctly
+- `if ... else ...` parses and executes correctly
+- logical operators respect precedence
+- `while` loops stop correctly
+- list literals transpile to valid Python
+- indexing works for valid positions and fails clearly for invalid ones
+- built-ins behave consistently
 
 ## 12. Risks and Pitfalls
 
-### Ambiguous Grammar
+### Keyword Ambiguity
 
-If statement boundaries are too loose, the parser will become fragile. Keep each statement form strict.
-
-### Too Much Natural Language
-
-Do not try to make Lerato parse free-form Sepedi phrases. Use Sepedi-inspired keywords with conventional programming structure.
+Do not reuse one word for multiple meanings unless the grammar stays unambiguous. Keeping `and`, `or`, and `not` unchanged reduces this risk.
 
 ### Scope Creep
 
-Loops, imports, collections, and better tooling should wait until the five example programs run end to end.
+Loops and lists are enough for version 0.2. Do not pull in modules, classes, or advanced tooling.
 
-### Keyboard Issues
+### Error Regressions
 
-Do not introduce accented or special characters into keywords. Keep the language ASCII-only until tooling is stable.
+Each new syntax feature can make parse errors harder to read. Keep strict tests around line and column reporting.
+
+### Unsafe Runtime Growth
+
+If more built-ins are exposed, keep the execution environment narrow and intentional.
 
 ## 13. Recommended Decisions
 
-To move fastest, the project should commit to these decisions now:
+To keep momentum, the project should commit to these decisions for version 0.2:
 
-- Python implementation
-- handwritten lexer
-- handwritten recursive-descent parser
-- transpile to Python, then execute
-- explicit block delimiters with `gona` and `feleletsa`
-- no indentation-sensitive parsing
-- no loops or modules in version 0
-
-If a proposed change does not help deliver the 2-week sequence above, it should be deferred.
+- keep Python as the implementation language
+- keep the handwritten lexer and parser
+- keep transpilation to Python
+- keep explicit block delimiters
+- add features in the order: `else`, comments, logic, loops, lists, built-ins
+- defer imports, classes, and advanced collections
