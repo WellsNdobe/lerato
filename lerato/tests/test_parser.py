@@ -12,6 +12,7 @@ from lerato.ast_nodes import (
     StringLiteral,
     FunctionDefStmt,
     UnaryExpr,
+    WhileStmt,
 )
 from lerato.errors import LeratoSyntaxError
 from lerato.parser import parse_expression, parse_program
@@ -120,6 +121,37 @@ def test_parses_if_block() -> None:
     assert isinstance(statement.condition, BinaryExpr)
     assert len(statement.body) == 1
     assert isinstance(statement.body[0], PrintStmt)
+    assert statement.else_body == []
+
+
+def test_parses_if_else_block() -> None:
+    program = parse_program(
+        "ge x > 5 gona\n"
+        'bontsha("kgolo")\n'
+        "goba\n"
+        'bontsha("nyane")\n'
+        "feleletsa\n"
+    )
+
+    statement = program.statements[0]
+    assert isinstance(statement, IfStmt)
+    assert len(statement.body) == 1
+    assert len(statement.else_body) == 1
+    assert isinstance(statement.else_body[0], PrintStmt)
+
+
+def test_parses_while_block() -> None:
+    program = parse_program(
+        "gefela x < 3 gona\n"
+        "x = x + 1\n"
+        "feleletsa\n"
+    )
+
+    statement = program.statements[0]
+    assert isinstance(statement, WhileStmt)
+    assert isinstance(statement.condition, BinaryExpr)
+    assert len(statement.body) == 1
+    assert isinstance(statement.body[0], AssignStmt)
 
 
 def test_parses_function_definition_and_return() -> None:
@@ -168,5 +200,14 @@ def test_raises_on_missing_newline_after_gona() -> None:
         parse_program('ge nnete gona bontsha("ee")\nfeleletsa\n')
     except LeratoSyntaxError as exc:
         assert "expected newline after 'gona'" in str(exc)
+    else:
+        raise AssertionError("expected LeratoSyntaxError")
+
+
+def test_raises_on_missing_newline_after_goba() -> None:
+    try:
+        parse_program('ge nnete gona\nbontsha("ee")\ngoba bontsha("aowa")\nfeleletsa\n')
+    except LeratoSyntaxError as exc:
+        assert "expected newline after 'goba'" in str(exc)
     else:
         raise AssertionError("expected LeratoSyntaxError")

@@ -19,6 +19,7 @@ from lerato.ast_nodes import (
     Statement,
     StringLiteral,
     UnaryExpr,
+    WhileStmt,
 )
 from lerato.errors import LeratoSyntaxError
 from lerato.lexer import Token, TokenType, tokenize
@@ -56,6 +57,8 @@ class Parser:
             return self._print_statement()
         if self._match(TokenType.GE):
             return self._if_statement()
+        if self._match(TokenType.GEFELA):
+            return self._while_statement()
         if self._match(TokenType.TIRO):
             return self._function_statement()
         if self._match(TokenType.BUSA):
@@ -82,8 +85,23 @@ class Parser:
         condition = self._equality()
         self._consume(TokenType.GONA, "expected 'gona' after if condition")
         self._require_block_start("expected newline after 'gona'")
+        body = self._block_until(TokenType.GOBA, TokenType.FELELETSA)
+
+        else_body: list[Statement] = []
+        if self._match(TokenType.GOBA):
+            self._require_block_start("expected newline after 'goba'")
+            else_body = self._block_until(TokenType.FELELETSA)
+
+        self._consume(TokenType.FELELETSA, "expected 'feleletsa' to end block")
+        self._consume_trailing_newlines()
+        return IfStmt(condition, body, else_body)
+
+    def _while_statement(self) -> WhileStmt:
+        condition = self._equality()
+        self._consume(TokenType.GONA, "expected 'gona' after while condition")
+        self._require_block_start("expected newline after 'gona'")
         body = self._block()
-        return IfStmt(condition, body)
+        return WhileStmt(condition, body)
 
     def _function_statement(self) -> FunctionDefStmt:
         name = self._consume(TokenType.IDENTIFIER, "expected function name")
@@ -114,15 +132,18 @@ class Parser:
         return ExprStmt(expression)
 
     def _block(self) -> list[Statement]:
+        statements = self._block_until(TokenType.FELELETSA)
+        self._consume(TokenType.FELELETSA, "expected 'feleletsa' to end block")
+        self._consume_trailing_newlines()
+        return statements
+
+    def _block_until(self, *end_tokens: TokenType) -> list[Statement]:
         statements: list[Statement] = []
         self._skip_newlines()
 
-        while not self._check(TokenType.FELELETSA) and not self._is_at_end():
+        while not self._check_any(*end_tokens) and not self._is_at_end():
             statements.append(self._statement())
             self._skip_newlines()
-
-        self._consume(TokenType.FELELETSA, "expected 'feleletsa' to end block")
-        self._consume_trailing_newlines()
         return statements
 
     def _equality(self) -> Expression:
@@ -255,6 +276,9 @@ class Parser:
         if self._is_at_end():
             return token_type == TokenType.EOF
         return self._peek().token_type == token_type
+
+    def _check_any(self, *token_types: TokenType) -> bool:
+        return any(self._check(token_type) for token_type in token_types)
 
     def _check_next(self, token_type: TokenType) -> bool:
         if self.current + 1 >= len(self.tokens):

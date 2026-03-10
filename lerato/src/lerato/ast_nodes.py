@@ -41,6 +41,13 @@ class AssignStmt(Statement):
 class IfStmt(Statement):
     condition: Expression
     body: list[Statement] = field(default_factory=list)
+    else_body: list[Statement] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class WhileStmt(Statement):
+    condition: Expression
+    body: list[Statement] = field(default_factory=list)
 
 
 @dataclass(slots=True)

@@ -19,6 +19,7 @@ from lerato.ast_nodes import (
     Statement,
     StringLiteral,
     UnaryExpr,
+    WhileStmt,
 )
 from lerato.parser import parse_program
 
@@ -43,6 +44,13 @@ class Transpiler:
             return [f"{indent}{self._expression(statement.expression)}"]
         if isinstance(statement, IfStmt):
             lines = [f"{indent}if {self._expression(statement.condition)}:"]
+            lines.extend(self._block(statement.body, indent_level + 1))
+            if statement.else_body:
+                lines.append(f"{indent}else:")
+                lines.extend(self._block(statement.else_body, indent_level + 1))
+            return lines
+        if isinstance(statement, WhileStmt):
+            lines = [f"{indent}while {self._expression(statement.condition)}:"]
             lines.extend(self._block(statement.body, indent_level + 1))
             return lines
         if isinstance(statement, FunctionDefStmt):

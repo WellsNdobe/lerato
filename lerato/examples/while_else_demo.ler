@@ -1,0 +1,8 @@
+bontsha("Hello World!")
+
+nomoro = 0
+
+gefela (nomoro <= 10) gona
+ bontsha(nomoro)
+ nomoro = nomoro + 1
+feleletsa

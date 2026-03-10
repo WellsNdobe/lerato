@@ -1,0 +1,85 @@
+bontsha("Lerato language demo")
+bontsha("Re bontsha mantšu ka moka a šomago ga bjale")
+
+tiro molaetsa_wa_palo(palo) gona
+    ge palo == 0 gona
+        busa "zero"
+    goba
+        ge palo < 0 gona
+            busa "negative"
+        goba
+            ge palo == 1 gona
+                busa "one"
+            goba
+                busa "many"
+            feleletsa
+        feleletsa
+    feleletsa
+feleletsa
+
+tiro fetola_letshwao(palo) gona
+    ge palo < 0 gona
+        busa 0 - palo
+    goba
+        busa palo
+    feleletsa
+feleletsa
+
+tiro lekola_moedi(palo, moedi) gona
+    ge palo >= moedi gona
+        busa nnete
+    goba
+        busa maaka
+    feleletsa
+feleletsa
+
+qalo = -3
+mafelelo = 6
+palomoka = 0
+palo_ya_dintlha = 0
+
+bontsha("Re thoma go bala")
+
+gefela qalo <= mafelelo gona
+    bontsha("--------")
+    bontsha("Palo ya bjale:")
+    bontsha(qalo)
+
+    tlhaloso = molaetsa_wa_palo(qalo)
+    bontsha("Mohuta wa palo:")
+    bontsha(tlhaloso)
+
+    boleng = fetola_letshwao(qalo)
+    bontsha("Boleng bjo bo se nago letswao la minus:")
+    bontsha(boleng)
+
+    ge lekola_moedi(boleng, 3) == nnete gona
+        bontsha("Boleng bo lekane goba bo feta 3")
+    goba
+        bontsha("Boleng bo ka fase ga 3")
+    feleletsa
+
+    palomoka = palomoka + boleng
+    palo_ya_dintlha = palo_ya_dintlha + 1
+    qalo = qalo + 1
+feleletsa
+
+bontsha("--------")
+bontsha("Kakaretso ya boleng:")
+bontsha(palomoka)
+bontsha("Palo ya dintlha tše di lekotswego:")
+bontsha(palo_ya_dintlha)
+
+ge palo_ya_dintlha > 0 gona
+    bontsha("Palogare:")
+    bontsha(palomoka / palo_ya_dintlha)
+goba
+    bontsha("Ga go na dintlha tša go balwa")
+feleletsa
+
+maemo_a_mafelelo = lekola_moedi(palomoka, 20)
+ge maemo_a_mafelelo == nnete gona
+    bontsha("Palomoka e kgolo kudu")
+goba
+    bontsha("Palomoka e sa le nnyane")
+feleletsa

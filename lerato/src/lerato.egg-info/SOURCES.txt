@@ -15,3 +15,7 @@ src/lerato.egg-info/entry_points.txt
 src/lerato.egg-info/requires.txt
 src/lerato.egg-info/top_level.txt
 tests/test_basic.py
+tests/test_lexer.py
+tests/test_parser.py
+tests/test_runtime.py
+tests/test_transpiler.py

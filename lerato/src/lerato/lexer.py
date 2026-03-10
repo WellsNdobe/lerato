@@ -34,6 +34,8 @@ class TokenType(Enum):
     TIRO = auto()
     BUSA = auto()
     GE = auto()
+    GOBA = auto()
+    GEFELA = auto()
     GONA = auto()
     FELELETSA = auto()
     NNETE = auto()
@@ -47,6 +49,8 @@ KEYWORDS = {
     "tiro": TokenType.TIRO,
     "busa": TokenType.BUSA,
     "ge": TokenType.GE,
+    "goba": TokenType.GOBA,
+    "gefela": TokenType.GEFELA,
     "gona": TokenType.GONA,
     "feleletsa": TokenType.FELELETSA,
     "nnete": TokenType.NNETE,

@@ -23,6 +23,28 @@ def test_transpiles_if_block() -> None:
     assert python_source == "if True:\n    print('ee')\n"
 
 
+def test_transpiles_if_else_block() -> None:
+    python_source = transpile_source(
+        "ge nnete gona\n"
+        'bontsha("ee")\n'
+        "goba\n"
+        'bontsha("aowa")\n'
+        "feleletsa\n"
+    )
+
+    assert python_source == "if True:\n    print('ee')\nelse:\n    print('aowa')\n"
+
+
+def test_transpiles_while_block() -> None:
+    python_source = transpile_source(
+        "gefela x < 3 gona\n"
+        "x = x + 1\n"
+        "feleletsa\n"
+    )
+
+    assert python_source == "while x < 3:\n    x = x + 1\n"
+
+
 def test_transpiles_function_definition_and_return() -> None:
     python_source = transpile_source(
         "tiro kopanya(a, b) gona\n"

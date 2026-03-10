@@ -21,6 +21,23 @@ def test_runtime_transpile_helper_matches_expected_python() -> None:
     assert python_source == "if True:\n    print('ee')\n"
 
 
+def test_runtime_executes_if_else_and_while(capsys) -> None:
+    execute_source(
+        "x = 0\n"
+        "gefela x < 3 gona\n"
+        "ge x == 1 gona\n"
+        'bontsha("magareng")\n'
+        "goba\n"
+        "bontsha(x)\n"
+        "feleletsa\n"
+        "x = x + 1\n"
+        "feleletsa\n"
+    )
+
+    captured = capsys.readouterr()
+    assert captured.out.strip().splitlines() == ["0", "magareng", "2"]
+
+
 def test_runtime_reports_bilingual_keyword_typo_hint() -> None:
     try:
         execute_source('bontsh("Dumela")\n')
