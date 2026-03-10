@@ -1,0 +1,3 @@
+leina = amogela("Leina la gago: ")
+bontsha("Dumela")
+bontsha(leina)

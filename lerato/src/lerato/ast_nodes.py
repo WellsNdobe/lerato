@@ -32,6 +32,11 @@ class PrintStmt(Statement):
 
 
 @dataclass(slots=True)
+class ImportStmt(Statement):
+    path: str
+
+
+@dataclass(slots=True)
 class AssignStmt(Statement):
     name: str
     expression: Expression

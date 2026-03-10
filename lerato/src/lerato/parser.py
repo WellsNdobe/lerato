@@ -11,6 +11,7 @@ from lerato.ast_nodes import (
     Expression,
     FunctionDefStmt,
     Identifier,
+    ImportStmt,
     IfStmt,
     NumberLiteral,
     PrintStmt,
@@ -55,6 +56,8 @@ class Parser:
     def _statement(self) -> Statement:
         if self._match(TokenType.BONTSHA):
             return self._print_statement()
+        if self._match(TokenType.TSENYA):
+            return self._import_statement()
         if self._match(TokenType.GE):
             return self._if_statement()
         if self._match(TokenType.GEFELA):
@@ -73,6 +76,11 @@ class Parser:
         self._consume(TokenType.RIGHT_PAREN, "expected ')' after print expression")
         self._consume_statement_terminator("expected newline after print statement")
         return PrintStmt(expression)
+
+    def _import_statement(self) -> ImportStmt:
+        path = self._consume(TokenType.STRING, "expected string path after 'tsenya'")
+        self._consume_statement_terminator("expected newline after import statement")
+        return ImportStmt(path.literal)
 
     def _assignment_statement(self) -> AssignStmt:
         name = self._consume(TokenType.IDENTIFIER, "expected variable name")

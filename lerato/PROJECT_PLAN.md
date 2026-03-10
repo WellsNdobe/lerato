@@ -193,7 +193,7 @@ Important constraints:
 
 #### Day 11
 
-- add built-ins such as input, length, and conversions
+- add built-ins such as `amogela(...)`, length, and conversions
 - test runtime behavior and failure cases
 
 #### Day 12

@@ -1,0 +1,4 @@
+tsenya "import_helper.ler"
+
+karabo = kopanya(2, 3)
+bontsha(karabo)

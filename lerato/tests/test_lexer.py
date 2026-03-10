@@ -7,7 +7,7 @@ def token_types(source: str) -> list[TokenType]:
 
 
 def test_lexes_keywords_and_eof() -> None:
-    tokens = tokenize("bontsha tiro busa ge goba gefela gona feleletsa nnete maaka")
+    tokens = tokenize("bontsha tiro busa ge goba gefela gona tsenya feleletsa nnete maaka")
 
     assert [token.token_type for token in tokens] == [
         TokenType.BONTSHA,
@@ -17,6 +17,7 @@ def test_lexes_keywords_and_eof() -> None:
         TokenType.GOBA,
         TokenType.GEFELA,
         TokenType.GONA,
+        TokenType.TSENYA,
         TokenType.FELELETSA,
         TokenType.NNETE,
         TokenType.MAAKA,

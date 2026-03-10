@@ -37,6 +37,7 @@ class TokenType(Enum):
     GOBA = auto()
     GEFELA = auto()
     GONA = auto()
+    TSENYA = auto()
     FELELETSA = auto()
     NNETE = auto()
     MAAKA = auto()
@@ -52,6 +53,7 @@ KEYWORDS = {
     "goba": TokenType.GOBA,
     "gefela": TokenType.GEFELA,
     "gona": TokenType.GONA,
+    "tsenya": TokenType.TSENYA,
     "feleletsa": TokenType.FELELETSA,
     "nnete": TokenType.NNETE,
     "maaka": TokenType.MAAKA,

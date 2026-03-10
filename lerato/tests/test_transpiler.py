@@ -7,6 +7,12 @@ def test_transpiles_hello_world() -> None:
     assert python_source == "print('Dumela Lefase')\n"
 
 
+def test_transpiles_import_statement() -> None:
+    python_source = transpile_source('tsenya "helpers.ler"\n')
+
+    assert python_source == "__lerato_import__('helpers.ler')\n"
+
+
 def test_transpiles_assignment_and_arithmetic() -> None:
     python_source = transpile_source("x = 1 + 2 * 3\n")
 

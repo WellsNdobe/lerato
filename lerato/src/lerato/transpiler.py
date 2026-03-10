@@ -11,6 +11,7 @@ from lerato.ast_nodes import (
     Expression,
     FunctionDefStmt,
     Identifier,
+    ImportStmt,
     IfStmt,
     NumberLiteral,
     PrintStmt,
@@ -36,6 +37,8 @@ class Transpiler:
 
         if isinstance(statement, PrintStmt):
             return [f"{indent}print({self._expression(statement.expression)})"]
+        if isinstance(statement, ImportStmt):
+            return [f"{indent}__lerato_import__({statement.path!r})"]
         if isinstance(statement, AssignStmt):
             return [f"{indent}{statement.name} = {self._expression(statement.expression)}"]
         if isinstance(statement, ReturnStmt):

@@ -4,6 +4,7 @@ from lerato.ast_nodes import (
     BooleanLiteral,
     CallExpr,
     Identifier,
+    ImportStmt,
     IfStmt,
     NumberLiteral,
     PrintStmt,
@@ -140,6 +141,14 @@ def test_parses_if_else_block() -> None:
     assert isinstance(statement.else_body[0], PrintStmt)
 
 
+def test_parses_import_statement() -> None:
+    program = parse_program('tsenya "helpers.ler"\n')
+
+    statement = program.statements[0]
+    assert isinstance(statement, ImportStmt)
+    assert statement.path == "helpers.ler"
+
+
 def test_parses_while_block() -> None:
     program = parse_program(
         "gefela x < 3 gona\n"
@@ -209,5 +218,14 @@ def test_raises_on_missing_newline_after_goba() -> None:
         parse_program('ge nnete gona\nbontsha("ee")\ngoba bontsha("aowa")\nfeleletsa\n')
     except LeratoSyntaxError as exc:
         assert "expected newline after 'goba'" in str(exc)
+    else:
+        raise AssertionError("expected LeratoSyntaxError")
+
+
+def test_raises_on_missing_import_path() -> None:
+    try:
+        parse_program("tsenya\n")
+    except LeratoSyntaxError as exc:
+        assert "expected string path after 'tsenya'" in str(exc)
     else:
         raise AssertionError("expected LeratoSyntaxError")
