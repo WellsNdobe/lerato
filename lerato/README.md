@@ -80,5 +80,16 @@ uv run --with pytest pytest tests/test_parser.py
 - `src/lerato/` contains the implementation.
 - `tests/` contains lexer, parser, transpiler, runtime, and basic CLI tests.
 - `examples/` contains small runnable `.ler` programs.
+- `editors/vscode/lerato-syntax/` contains a minimal VS Code syntax highlighter for `.ler` files.
 - `DOCUMENTATION.md` is the language reference.
 - `PROJECT_PLAN.md` tracks the prototype scope and milestones.
+
+## Editor Support
+
+A minimal VS Code syntax highlighter lives in `editors/vscode/lerato-syntax/`.
+
+To try it locally:
+
+1. Open `editors/vscode/lerato-syntax/` in VS Code.
+2. Press `F5` to launch an Extension Development Host, or package it as a `.vsix`.
+3. Open any `.ler` file and VS Code will associate it with the Lerato grammar.

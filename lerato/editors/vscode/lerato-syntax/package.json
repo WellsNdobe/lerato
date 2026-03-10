@@ -1,0 +1,38 @@
+{
+  "name": "lerato-syntax",
+  "displayName": "Lerato Syntax",
+  "description": "Syntax highlighting for the Lerato programming language.",
+  "version": "0.1.0",
+  "publisher": "lerato-contributors",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "lerato",
+        "aliases": [
+          "Lerato",
+          "lerato"
+        ],
+        "extensions": [
+          ".ler"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "lerato",
+        "scopeName": "source.lerato",
+        "path": "./syntaxes/lerato.tmLanguage.json"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.7.1"
+  }
+}
