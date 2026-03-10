@@ -2,17 +2,16 @@
 
 ## Purpose
 
-This document explains how to try Lerato at each stage of implementation, even before the full language pipeline is complete.
+This document explains how to run and verify the current Lerato prototype.
 
 ## Current Status
 
-As of Day 2, the usable part of the project is the lexer. That means you can:
+As of March 10, 2026, the full version 0 prototype is working. You can:
 
-- install or run the package through `uv`
-- run tests
-- inspect whether Lerato source tokenizes correctly
-
-You cannot yet execute `.ler` programs end to end. That becomes possible after the parser, transpiler, and runtime are wired together.
+- execute `.ler` programs end to end
+- run the full pytest suite
+- test the CLI entrypoint
+- inspect the lexer, parser, transpiler, and runtime stages independently
 
 ## Recommended Commands
 
@@ -22,117 +21,51 @@ You cannot yet execute `.ler` programs end to end. That becomes possible after t
 uv run --with pytest pytest
 ```
 
+Without `uv`:
+
+```powershell
+python -m pytest
+```
+
 ### Show Package Version
 
 ```powershell
 uv run lerato --version
 ```
 
-### Current CLI Behavior
+Without `uv`:
+
+```powershell
+python -m lerato.cli --version
+```
+
+### Run A Lerato Program
 
 ```powershell
 uv run lerato examples/hello.ler
+```
+
+Without `uv`:
+
+```powershell
+python -m lerato.cli examples/hello.ler
 ```
 
 Expected current behavior:
 
-- the CLI confirms the file path
-- it does not yet execute Lerato code
-
-## How To Try Features As They Become Usable
-
-### Stage 1: CLI Bootstrap
-
-What works:
-
-- package install
-- CLI startup
-- version output
-
-How to test:
-
-```powershell
-uv run lerato --version
-```
-
-### Stage 2: Lexer
-
-What works:
-
-- keyword recognition
-- string and number tokenization
-- operator tokenization
-- line and column tracking
-
-How to test:
-
-```powershell
-uv run --with pytest pytest tests/test_lexer.py
-```
-
-Suggested source snippets to validate through tests:
-
-```lerato
-bontsha("Dumela Lefase")
-```
-
-```lerato
-x = 1 + 2
-```
-
-```lerato
-ge nnete gona
-feleletsa
-```
-
-### Stage 3: Parser
-
-Target command once implemented:
-
-```powershell
-uv run --with pytest pytest tests/test_parser.py
-```
-
-What should be usable at that stage:
-
-- valid `.ler` syntax parses into AST nodes
-- invalid syntax reports useful line-based errors
-
-### Stage 4: Transpiler
-
-Target command once implemented:
-
-```powershell
-uv run --with pytest pytest tests/test_transpiler.py
-```
-
-What should be usable at that stage:
-
-- Lerato source converts into Python source
-- small examples can be inspected as generated Python
-
-### Stage 5: Full Prototype
-
-Target command once implemented:
-
-```powershell
-uv run lerato examples/hello.ler
-```
-
-What should be usable at that stage:
-
-- `.ler` files execute end to end
-- hello world, variables, arithmetic, `if`, and functions work
+- the CLI executes `.ler` files
+- syntax errors surface as Lerato syntax errors
+- runtime failures are wrapped with Lerato runtime errors
 
 ## Minimum Demo Goal
 
-The first meaningful demo should be this program running successfully:
+This program should run successfully:
 
 ```lerato
 bontsha("Dumela Lefase")
 ```
 
-After that, the next demo should be:
+Function demo:
 
 ```lerato
 tiro kopanya(a, b) gona
@@ -142,11 +75,31 @@ feleletsa
 bontsha(kopanya(2, 3))
 ```
 
-## Recommended Order For Manual Checks
+Conditional demo:
+
+```lerato
+ge nnete gona
+    bontsha("go lokile")
+feleletsa
+```
+
+## Recommended Manual Checks
 
 1. `uv run lerato --version`
 2. `uv run --with pytest pytest tests/test_basic.py`
 3. `uv run --with pytest pytest tests/test_lexer.py`
-4. later: parser tests
-5. later: transpiler tests
-6. finally: run example `.ler` files through the CLI
+4. `uv run --with pytest pytest tests/test_parser.py`
+5. `uv run --with pytest pytest tests/test_transpiler.py`
+6. `uv run --with pytest pytest tests/test_runtime.py`
+7. run all files in `examples/` through the CLI
+
+## Verified Example Files
+
+These example programs are expected to run successfully:
+
+- `examples/hello.ler`
+- `examples/variables.ler`
+- `examples/arithmetic.ler`
+- `examples/if_check.ler`
+- `examples/nested_check.ler`
+- `examples/function_add.ler`
